@@ -117,6 +117,7 @@ def generator(samples, batch_size=BATCH_SIZE):
             steering_angles = []
             for batch_sample in batch_samples:
                 image = cv2.imread(batch_sample[0])
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 steering_angle = batch_sample[1]
                 if (batch_sample[2] == True):
                     image = cv2.flip(image, 1)
