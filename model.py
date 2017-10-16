@@ -4,7 +4,7 @@ import numpy as np
 import sklearn
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential, Model
-from keras.layers import Cropping2D, Lambda, Convolution2D, Flatten, Dense
+from keras.layers import Cropping2D, Lambda, Convolution2D, Flatten, Dense, Dropout
 from keras.layers.pooling import MaxPooling2D
 import matplotlib
 matplotlib.use('Agg')
@@ -128,7 +128,7 @@ def generator(samples, batch_size=BATCH_SIZE):
             X_train = np.array(images)
             y_train = np.array(steering_angles)
 
-            yield sklearn.utils.shuffle(X_train, y_train)
+            yield (X_train, y_train)
 
 
 train_generator = generator(train_samples, batch_size=BATCH_SIZE)
@@ -155,9 +155,13 @@ model = Sequential()
 model.add(Cropping2D(cropping=((70, 25), (0, 0)), input_shape=(160, 320, 3)))
 model.add(Lambda(lambda x: x / 255.0 - 0.5))
 model.add(Convolution2D(24, 5, 5, subsample=(2, 2), activation='relu'))
+model.add(Dropout(0.25))
 model.add(Convolution2D(36, 5, 5, subsample=(2, 2), activation='relu'))
+model.add(Dropout(0.25))
 model.add(Convolution2D(48, 5, 5, subsample=(2, 2), activation='relu'))
+model.add(Dropout(0.5))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
+model.add(Dropout(0.5))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Flatten())
 model.add(Dense(100))
